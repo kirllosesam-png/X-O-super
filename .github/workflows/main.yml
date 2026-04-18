@@ -1,0 +1,24 @@
+name: Build Android APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libltdl-dev libffi-dev libssl-dev autoconf automake libtool pkg-config zlib1g-dev adb zlib1g libncurses6 libstdc++6
+          pip install --user --upgrade buildozer cython==0.29.33 kivy
+      - name: Build with Buildozer
+        run: yes | buildozer -v android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: XO-Super-Final
+          path: bin/*.apk
+          
